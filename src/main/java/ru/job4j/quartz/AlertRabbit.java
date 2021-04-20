@@ -17,6 +17,9 @@ public class AlertRabbit {
         try(InputStream io = loader.getResourceAsStream("rabbit.properties")) {
             Properties properties = new Properties();
             properties.load(io);
+            if (io != null) {
+                io.close();
+            }
             int interval = Integer.parseInt(properties.getProperty("rabbit.interval"));
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
