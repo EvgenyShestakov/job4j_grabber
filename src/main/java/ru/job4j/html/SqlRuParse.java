@@ -11,14 +11,16 @@ import java.time.format.DateTimeFormatter;
 public class SqlRuParse {
     public static void main(String[] args) throws Exception {
         SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
-        Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
-        Elements row = doc.select(".postslisttopic");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMMM-yyyy HH:mm");
-        for (Element td : row) {
-            Element href = td.child(0);
-            System.out.println(href.attr("href"));
-            System.out.println(href.text());
-            System.out.println( sqlRuDateTimeParser.parse(td.parent().child(5).text()).format(formatter));
+        for (int page = 1; page < 6; page++) {
+            Document doc = Jsoup.connect(String.format("https://www.sql.ru/forum/job-offers/%d", page)).get();
+            Elements row = doc.select(".postslisttopic");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMMM-yyyy HH:mm");
+            for (Element td : row) {
+                Element href = td.child(0);
+                System.out.println(href.attr("href"));
+                System.out.println(href.text());
+                System.out.println(sqlRuDateTimeParser.parse(td.parent().child(5).text()).format(formatter));
+            }
         }
     }
 }
