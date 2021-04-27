@@ -7,7 +7,7 @@ import java.util.Map;
 public class SqlRuDateTimeParser implements DateTimeParser {
     private static final DateTimeFormatter FORMATTER_1 = DateTimeFormatter.ofPattern("dd MMM yy");
     private static final DateTimeFormatter FORMATTER_2 = DateTimeFormatter.ofPattern("dd MMM yy HH:mm");
-    private static final Map<String,String> MONTHS = Map.ofEntries(Map.entry("янв", "Jan"),
+    private static final Map<String, String> MONTHS = Map.ofEntries(Map.entry("янв", "Jan"),
             Map.entry("фев", "Feb"),
             Map.entry("мар", "Mar"), Map.entry("апр", "Apr"), Map.entry("май", "May"),
             Map.entry("июн", "Jun"), Map.entry("июл", "Jul"), Map.entry("авг", "Aug"),

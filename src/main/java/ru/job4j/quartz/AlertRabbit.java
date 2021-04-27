@@ -18,7 +18,7 @@ import static org.quartz.SimpleScheduleBuilder.*;
 public class AlertRabbit {
     public static void main(String[] args)  {
         ClassLoader loader = AlertRabbit.class.getClassLoader();
-        try(InputStream io = loader.getResourceAsStream("rabbit.properties")) {
+        try (InputStream io = loader.getResourceAsStream("rabbit.properties")) {
             Properties properties = new Properties();
             properties.load(io);
             if (io != null) {
@@ -28,7 +28,7 @@ public class AlertRabbit {
             String url = properties.getProperty("url");
             String login = properties.getProperty("login");
             String password = properties.getProperty("password");
-            try(Connection connection =  DriverManager.getConnection(url, login, password)) {
+            try (Connection connection =  DriverManager.getConnection(url, login, password)) {
                 int interval = Integer.parseInt(properties.getProperty("rabbit.interval"));
                 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
                 scheduler.start();
@@ -58,8 +58,8 @@ public class AlertRabbit {
         @Override
         public void execute(JobExecutionContext context) {
             System.out.println("Rabbit runs here ...");
-            Connection connection = (Connection)context.getJobDetail().getJobDataMap().get("store");
-            try(PreparedStatement ps = connection.
+            Connection connection = (Connection) context.getJobDetail().getJobDataMap().get("store");
+            try (PreparedStatement ps = connection.
                     prepareStatement("insert into rabbit(created_date) values (?)")) {
                 ps.setLong(1, System.currentTimeMillis());
                 ps.execute();
