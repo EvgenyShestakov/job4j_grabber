@@ -4,7 +4,7 @@ language: java
 
 # version numbers
 jdk:
-  - jdk15
+  - openjdk15
 
 sudo: false
 
