@@ -22,11 +22,9 @@ public class SqlRuParse implements Parse {
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-            String link1 = href.attr("href");
-            String text = href.text();
-            LocalDateTime created = sqlRuDateTimeParser.parse(td.parent().child(5).text());
-            String name = td.parent().child(2).text();
-            posts.add(new Post(name, text, link1, created));
+            String link2 = href.attr("href");
+            Post post = detail(link2);
+            posts.add(post);
         }
         return posts;
     }
@@ -36,12 +34,18 @@ public class SqlRuParse implements Parse {
         SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
         Document doc = Jsoup.connect(link).get();
         Elements elements = doc.getElementsByClass("msgTable");
-        LocalDateTime date = sqlRuDateTimeParser.
-                parse(elements.last().getElementsByClass("msgFooter").text().substring(0, 16).trim());
+        String tmpData = elements.last().getElementsByClass("msgFooter").text();
+        String dataTime = tmpData.substring(0, (tmpData.indexOf("[") - 1));
+        LocalDateTime data = sqlRuDateTimeParser.
+                parse(dataTime);
+        String heading = elements.first().getElementsByClass("messageHeader").text();
+        String headingReplace = heading.replace(heading.substring(heading.length() - 6), "");
         String text = elements.first().getElementsByClass("msgBody").last().text();
-        String profile = elements.first().getElementsByClass("msgBody").first().child(0).attr("href");
+        String titleText = String.format("%s%n%s", headingReplace, text);
+        String linkToProfile = elements.first().getElementsByClass("msgBody").
+                first().child(0).attr("href");
         String name = elements.first().getElementsByClass("msgBody").first().child(0).text();
-        return new Post(name, text, profile, date);
+        return new Post(name, titleText, linkToProfile, data);
     }
 
     public static void main(String[] args) throws Exception {
