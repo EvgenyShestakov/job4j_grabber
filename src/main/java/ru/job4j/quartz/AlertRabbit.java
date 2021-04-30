@@ -24,10 +24,10 @@ public class AlertRabbit {
             if (io != null) {
                 io.close();
             }
-            Class.forName(properties.getProperty("driver"));
-            String url = properties.getProperty("url");
-            String login = properties.getProperty("login");
-            String password = properties.getProperty("password");
+            Class.forName(properties.getProperty("jdbc.driver"));
+            String url = properties.getProperty("jdbc.url");
+            String login = properties.getProperty("jdbc.login");
+            String password = properties.getProperty("jdbc.password");
             try (Connection connection =  DriverManager.getConnection(url, login, password)) {
                 int interval = Integer.parseInt(properties.getProperty("rabbit.interval"));
                 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
