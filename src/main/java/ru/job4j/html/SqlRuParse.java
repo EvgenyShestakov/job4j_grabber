@@ -17,14 +17,16 @@ public class SqlRuParse implements Parse {
     @Override
     public List<Post> list(String link) throws IOException {
         List<Post> posts = new ArrayList<>();
-        SqlRuDateTimeParser sqlRuDateTimeParser = new SqlRuDateTimeParser();
         Document doc = Jsoup.connect(link).get();
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-            String link2 = href.attr("href");
-            Post post = detail(link2);
-            posts.add(post);
+            String heading = href.text();
+            if (heading.toLowerCase().contains("java ")) {
+                String link2 = href.attr("href");
+                Post post = detail(link2);
+                posts.add(post);
+            }
         }
         return posts;
     }

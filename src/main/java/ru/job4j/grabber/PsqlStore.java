@@ -26,13 +26,29 @@ public class PsqlStore implements  Store, AutoCloseable {
 
     @Override
     public void save(Post post) throws SQLException {
-        try(PreparedStatement ps = cnn.
-                prepareStatement("insert into post(name, text, link, created) values(?, ?, ?, ?)")) {
-            ps.setString(1, post.getName());
-            ps.setString(2, post.getText());
-            ps.setString(3, post.getLink());
-            ps.setObject(4, post.getCreated());
-            ps.execute();
+        String text = post.getText();
+        LocalDateTime date = post.getCreated();
+        try(PreparedStatement specify = cnn.prepareStatement("select * from post where text = ?")) {
+            specify.setString(1, text);
+            ResultSet resultSet = specify.executeQuery();
+            if (resultSet.next()) {
+                if (!date.equals(resultSet.getTimestamp(5).toLocalDateTime())) {
+                    try (PreparedStatement update = cnn.
+                            prepareStatement("update post set created = ? where text = ?")) {
+                        update.setObject(1, date);
+                        update.setString(2, text);
+                    }
+                }
+            } else {
+                try(PreparedStatement ps = cnn.
+                        prepareStatement("insert into post(name, text, link, created) values(?, ?, ?, ?)")) {
+                    ps.setString(1, post.getName());
+                    ps.setString(2, post.getText());
+                    ps.setString(3, post.getLink());
+                    ps.setObject(4, date);
+                    ps.execute();
+                }
+            }
         }
     }
 
