@@ -12,7 +12,7 @@ public class PsqlStore implements  Store, AutoCloseable {
 
     public PsqlStore(Properties cfg) {
         ClassLoader loader = PsqlStore.class.getClassLoader();
-        try (InputStream io = loader.getResourceAsStream("rabbit.properties")){
+        try (InputStream io = loader.getResourceAsStream("rabbit.properties")) {
             cfg.load(io);
             Class.forName(cfg.getProperty("jdbc.driver"));
             String url = cfg.getProperty("jdbc.url");
@@ -28,7 +28,7 @@ public class PsqlStore implements  Store, AutoCloseable {
     public void save(Post post) throws SQLException {
         String text = post.getText();
         LocalDateTime date = post.getCreated();
-        try(PreparedStatement specify = cnn.prepareStatement("select * from post where text = ?")) {
+        try (PreparedStatement specify = cnn.prepareStatement("select * from post where text = ?")) {
             specify.setString(1, text);
             ResultSet resultSet = specify.executeQuery();
             if (resultSet.next()) {
@@ -40,7 +40,7 @@ public class PsqlStore implements  Store, AutoCloseable {
                     }
                 }
             } else {
-                try(PreparedStatement ps = cnn.
+                try (PreparedStatement ps = cnn.
                         prepareStatement("insert into post(name, text, link, created) values(?, ?, ?, ?)")) {
                     ps.setString(1, post.getName());
                     ps.setString(2, post.getText());
@@ -74,7 +74,7 @@ public class PsqlStore implements  Store, AutoCloseable {
     @Override
     public Post findById(String id) throws SQLException {
         Post post = null;
-        try(PreparedStatement ps = cnn.
+        try (PreparedStatement ps = cnn.
                 prepareStatement("SELECT * FROM post WHERE id = ?")) {
             ps.setInt(1, Integer.parseInt(id));
             ResultSet resultSet = ps.executeQuery();
